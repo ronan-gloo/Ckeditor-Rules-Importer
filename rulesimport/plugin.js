@@ -70,6 +70,7 @@ function findEditorStyleSheet(filePath)
   	fileRules.setAttribute("rel", "stylesheet");
   	fileRules.setAttribute("type", "text/css");
   	fileRules.setAttribute("href", filePath);
+    head.appendChild (fileRules);
 
 	for (var i = 0; i <= document.styleSheets.length ; i++) 
 	{
