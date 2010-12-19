@@ -35,14 +35,15 @@ CKEDITOR.plugins.add( 'rulesimport',
 				this.add('', lang.reset, lang.reset);
 				
 				this.startGroup(lang.groupLabel);
-				for (var this_tag in tags) this.add(this_tag, this_tag, this_tag);
+				for (var this_tag in tags) this.add(this_tag,this_tag, this_tag);
             },
 
             onClick : function( value )
             {
 				editor.focus();
 				editor.fire( 'saveSnapshot' );
-				editor.getSelection().getStartElement().setAttribute('class', value);
+				var wrapper = getWrapper(editor.getSelection());
+				wrapper.setAttribute('class', value)
 				editor.fire( 'saveSnapshot' );
             },
             
@@ -50,9 +51,11 @@ CKEDITOR.plugins.add( 'rulesimport',
 			{
 				editor.on( 'selectionChange', function( ev )
 				{
-			    	var value = "", currentValue = this.getValue(), 
-			    		element = editor.getSelection().getStartElement(),
-			    		elementClass = element.getAttribute('class');
+			    	// valeur actuelle dans le Dropdown
+			    	var value = "", 
+			    		currentValue = this.getValue(),
+			    		wrapper = getWrapper(editor.getSelection()),
+			    		elementClass = wrapper.getAttribute('class');
 			    	
 			    	value = (elementClass in tags) ? elementClass : '';
 			    	
@@ -64,27 +67,27 @@ CKEDITOR.plugins.add( 'rulesimport',
 	}
 });
 
+// recherche le fichier css
+// retiré la création dynamique du fichier css: bug avec firefox
 function findEditorStyleSheet(filePath)
-{
-	var fileRules = document.createElement("link");
-  	fileRules.setAttribute("rel", "stylesheet");
-  	fileRules.setAttribute("type", "text/css");
-  	fileRules.setAttribute("href", filePath);
-    head.appendChild (fileRules);
-
+{	
 	for (var i = 0; i <= document.styleSheets.length ; i++) 
 	{
-		if (document.styleSheets[i].href == filePath) 
-			return getRules(document.styleSheets[i]);
+	    if (document.styleSheets[i].href == filePath)
+	    {
+	    	return getRules(document.styleSheets[i]);
+	    }
 	}
+	
 	return false;
 }
 
 // Construit un array avec les class déclarée dans le fichier
 // les déclaration de plsieurs éléments à la fois sont ignorées.
 function getRules(cssDoc)
-{
-    var rulesObj = new Array(), i = 0, rules = cssDoc.rules || cssDoc.cssRules;
+{	
+    var rulesObj = new Array(), i = 0;
+    var rules = cssDoc.rules || cssDoc.cssRules;
     
     for (var x = 0; x < rules.length; x++) 
     {
@@ -97,4 +100,18 @@ function getRules(cssDoc)
     	}
     }
     return rulesObj;
+}
+
+// détermine le cadre d'application de la selection
+function getWrapper(selection)
+{
+	if (selection.getCommonAncestor().typeof == undefined || selection.getCommonAncestor().getName() == 'body')
+	{
+		selection = selection.getStartElement();
+	}
+	else
+	{
+		selection = selection.getCommonAncestor();
+	}
+	return selection;
 }

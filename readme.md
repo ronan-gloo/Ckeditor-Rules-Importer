@@ -15,3 +15,5 @@ Load plugin and set path to your css file in config.js:
 };`
 
 Add the plugin to your toolbar ("RulesImport")
+
+ATM, you'll need to link the file manually in your html page
