@@ -105,7 +105,7 @@ function getRules(cssDoc)
 // détermine le cadre d'application de la selection
 function getWrapper(selection)
 {
-	if (selection.getCommonAncestor().typeof == undefined || selection.getCommonAncestor().getName() == 'body')
+	if (selection.getCommonAncestor() == 'undefined' || selection.getCommonAncestor().getName() == 'body')
 	{
 		selection = selection.getStartElement();
 	}
