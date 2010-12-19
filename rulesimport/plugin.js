@@ -40,11 +40,11 @@ CKEDITOR.plugins.add( 'rulesimport',
 
             onClick : function( value )
             {
+                var wrapper = getWrapper(editor.getSelection());
 				editor.focus();
 				editor.fire( 'saveSnapshot' );
-				var wrapper = getWrapper(editor.getSelection());
-				wrapper.setAttribute('class', value)
-				editor.fire( 'saveSnapshot' );
+				wrapper = (value != '') ? wrapper.setAttribute('class', value) : wrapper.removeAttribute('class');
+				editor.fire( 'saveSnapshot' ); 
             },
             
             onRender : function()
